@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
+             x:Class="MyTasksClient.Features.Tasks.Views.TasksPage"
+             x:DataType="vm:TasksViewModel"
+             Title="MyTasks">
+
+    <VerticalStackLayout Padding="24" Spacing="6">
+        <Label Text="MYTASKS"
+               TextColor="{StaticResource Primary}"
+               FontAttributes="Bold"
+               FontSize="12" />
+
+        <Label Text="MyTasks"
+               Style="{StaticResource Headline}"
+               HorizontalOptions="Start"
+               SemanticProperties.HeadingLevel="Level1" />
+
+        <Label Text="Foundation is running. The task list arrives in a later step." />
+    </VerticalStackLayout>
+</ContentPage>
