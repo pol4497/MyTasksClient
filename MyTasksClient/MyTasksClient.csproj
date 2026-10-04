@@ -83,6 +83,9 @@
 	  <MauiXaml Update="Features\Tasks\Views\TasksPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\AppStyles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 	
 	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
