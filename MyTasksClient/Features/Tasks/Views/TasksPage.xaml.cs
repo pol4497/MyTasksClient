@@ -16,9 +16,9 @@ public partial class TasksPage : ContentPage
     {
         base.OnAppearing();
 
-        if (_viewModel.CheckConnectionCommand.CanExecute(null))
+        if (_viewModel.LoadTasksCommand.CanExecute(null))
         {
-            _viewModel.CheckConnectionCommand.Execute(null);
+            _viewModel.LoadTasksCommand.Execute(null);
         }
     }
 }

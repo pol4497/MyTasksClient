@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MyTasksClient.Features.Tasks.Models"
              xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
              x:Class="MyTasksClient.Features.Tasks.Views.TasksPage"
              x:DataType="vm:TasksViewModel"
@@ -8,15 +9,13 @@
              Shell.NavBarIsVisible="False"
              SafeAreaEdges="None">
 
-    <!-- Page paints edge-to-edge (None); the ScrollView keeps content clear of the system
-         bars (Container); the layout inside must not inset a second time (None). -->
     <ScrollView SafeAreaEdges="Container">
         <VerticalStackLayout Padding="20,32"
                              MaximumWidthRequest="1120"
                              HorizontalOptions="Fill"
                              SafeAreaEdges="None">
 
-            <!-- Page header (the web client's .page-header) -->
+            <!-- Page header -->
             <Label Text="MYTASKS" Style="{StaticResource EyebrowLabel}" />
             <Label Text="Tasks"
                    Style="{StaticResource PageTitleLabel}"
@@ -26,54 +25,124 @@
                    Style="{StaticResource PageSubtitleLabel}"
                    Margin="0,14,0,0" />
 
-            <!-- TEMPORARY: connection check from Step 2 and a style preview. Removed in Step 4. -->
-            <Label Text="{Binding ConnectionStatus}"
-                   Style="{StaticResource MetaLabel}"
-                   Margin="0,24,0,0" />
+            <!-- Section heading: "Your tasks" and the count -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,34,0,12">
+                <Label Text="Your tasks"
+                       Style="{StaticResource SectionTitleLabel}"
+                       VerticalOptions="Center"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Label Grid.Column="1"
+                       Text="{Binding TotalText}"
+                       Style="{StaticResource MetaLabel}"
+                       VerticalOptions="Center" />
+            </Grid>
 
-            <Border Style="{StaticResource CardBorder}" Margin="0,24,0,0">
-                <VerticalStackLayout Spacing="6">
-                    <Border Style="{StaticResource PillBorder}"
-                            BackgroundColor="{StaticResource StatusInProgressBackground}">
-                        <Label Text="In progress"
-                               Style="{StaticResource PillLabel}"
-                               TextColor="{StaticResource StatusInProgressText}" />
-                    </Border>
-                    <Label Text="Prepare the quarterly report"
-                           Style="{StaticResource CardTitleLabel}"
-                           Margin="0,4,0,0" />
-                    <Label Text="Collect the numbers from each team and draft the summary."
-                           Style="{StaticResource BodyLabel}" />
-                    <HorizontalStackLayout Spacing="16" Margin="0,9,0,0">
-                        <HorizontalStackLayout Spacing="5">
-                            <Label Text="Category" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
-                            <Label Text="Work" Style="{StaticResource MetaLabel}" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="5">
-                            <Label Text="Due" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
-                            <Label Text="Oct 31, 2026" Style="{StaticResource MetaLabel}" />
-                        </HorizontalStackLayout>
-                    </HorizontalStackLayout>
+            <!-- Loading -->
+            <Border Style="{StaticResource StateBorder}" IsVisible="{Binding IsLoading}">
+                <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       VerticalOptions="Center" />
+                    <Label Text="Loading tasks…"
+                           Style="{StaticResource StateLabel}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Error, with a way to retry -->
+            <Border Style="{StaticResource ErrorBorder}" IsVisible="{Binding HasError}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="{Binding ErrorMessage}" Style="{StaticResource ErrorLabel}" />
+                    <Button Text="Try again"
+                            Command="{Binding LoadTasksCommand}"
+                            HorizontalOptions="Start" />
                 </VerticalStackLayout>
             </Border>
 
-            <HorizontalStackLayout Spacing="8" Margin="0,16,0,0">
-                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusPendingBackground}">
-                    <Label Text="Pending" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusPendingText}" />
-                </Border>
-                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusInProgressBackground}">
-                    <Label Text="In progress" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusInProgressText}" />
-                </Border>
-                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusCompletedBackground}">
-                    <Label Text="Completed" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusCompletedText}" />
-                </Border>
-                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusCancelledBackground}">
-                    <Label Text="Cancelled" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusCancelledText}" />
-                </Border>
-            </HorizontalStackLayout>
+            <!-- Empty -->
+            <Border Style="{StaticResource StateBorder}" IsVisible="{Binding IsEmpty}">
+                <Label Text="No tasks yet. Add one above to get started."
+                       Style="{StaticResource StateLabel}" />
+            </Border>
 
-            <Button Text="Add task" HorizontalOptions="Start" Margin="0,16,0,0" />
+            <!-- Task cards -->
+            <VerticalStackLayout Spacing="10"
+                                 IsVisible="{Binding HasTasks}"
+                                 BindableLayout.ItemsSource="{Binding Tasks}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TaskItemViewModel">
+                        <Border Style="{StaticResource CardBorder}">
+                            <VerticalStackLayout Spacing="6">
 
+                                <!-- Status pill: one trigger per status, colours come from the theme -->
+                                <Border Style="{StaticResource PillBorder}">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                                     Value="{x:Static models:TaskItemStatus.Pending}">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusPendingBackground}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                                     Value="{x:Static models:TaskItemStatus.InProgress}">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusInProgressBackground}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                                     Value="{x:Static models:TaskItemStatus.Completed}">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusCompletedBackground}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                                     Value="{x:Static models:TaskItemStatus.Cancelled}">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusCancelledBackground}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+
+                                    <Label Text="{Binding StatusText}" Style="{StaticResource PillLabel}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                                         Value="{x:Static models:TaskItemStatus.Pending}">
+                                                <Setter Property="TextColor" Value="{StaticResource StatusPendingText}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                                         Value="{x:Static models:TaskItemStatus.InProgress}">
+                                                <Setter Property="TextColor" Value="{StaticResource StatusInProgressText}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                                         Value="{x:Static models:TaskItemStatus.Completed}">
+                                                <Setter Property="TextColor" Value="{StaticResource StatusCompletedText}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                                         Value="{x:Static models:TaskItemStatus.Cancelled}">
+                                                <Setter Property="TextColor" Value="{StaticResource StatusCancelledText}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Border>
+
+                                <Label Text="{Binding Title}"
+                                       Style="{StaticResource CardTitleLabel}"
+                                       Margin="0,4,0,0" />
+
+                                <Label Text="{Binding Description}"
+                                       Style="{StaticResource BodyLabel}"
+                                       IsVisible="{Binding HasDescription}" />
+
+                                <!-- Details wrap onto a second line on narrow screens -->
+                                <FlexLayout Wrap="Wrap" Margin="0,9,0,0">
+                                    <HorizontalStackLayout Spacing="5" Margin="0,0,16,0">
+                                        <Label Text="Category" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
+                                        <Label Text="{Binding CategoryText}" Style="{StaticResource MetaLabel}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Text="Due" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
+                                        <Label Text="{Binding DueDateText}" Style="{StaticResource MetaLabel}" />
+                                    </HorizontalStackLayout>
+                                </FlexLayout>
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
