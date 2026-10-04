@@ -78,4 +78,29 @@
         <Setter Property="FontSize" Value="11.5" />
     </Style>
 
+    <Style x:Key="StateBorder" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource OutlineStrongBrush}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeDashArray" Value="4,3" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+        <Setter Property="Padding" Value="26" />
+    </Style>
+
+    <Style x:Key="ErrorBorder" TargetType="Border" BasedOn="{StaticResource StateBorder}">
+        <Setter Property="BackgroundColor" Value="{StaticResource ErrorBackground}" />
+        <Setter Property="Stroke" Value="{StaticResource ErrorOutlineBrush}" />
+    </Style>
+
+    <Style x:Key="StateLabel" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="ErrorLabel" TargetType="Label" BasedOn="{StaticResource StateLabel}">
+        <Setter Property="TextColor" Value="{StaticResource ErrorText}" />
+        <Setter Property="HorizontalTextAlignment" Value="Start" />
+    </Style>
 </ResourceDictionary>
