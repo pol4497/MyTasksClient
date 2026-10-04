@@ -4,9 +4,76 @@
              xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
              x:Class="MyTasksClient.Features.Tasks.Views.TasksPage"
              x:DataType="vm:TasksViewModel"
-             Title="MyTasks">
+             Title="Tasks"
+             Shell.NavBarIsVisible="False"
+             SafeAreaEdges="None">
 
-    <VerticalStackLayout Padding="24" Spacing="6">
-        <Label Text="{Binding ConnectionStatus}" />
-    </VerticalStackLayout>
+    <!-- Page paints edge-to-edge (None); the ScrollView keeps content clear of the system
+         bars (Container); the layout inside must not inset a second time (None). -->
+    <ScrollView SafeAreaEdges="Container">
+        <VerticalStackLayout Padding="20,32"
+                             MaximumWidthRequest="1120"
+                             HorizontalOptions="Fill"
+                             SafeAreaEdges="None">
+
+            <!-- Page header (the web client's .page-header) -->
+            <Label Text="MYTASKS" Style="{StaticResource EyebrowLabel}" />
+            <Label Text="Tasks"
+                   Style="{StaticResource PageTitleLabel}"
+                   Margin="0,8,0,0"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Insert and inspect your daily tasks."
+                   Style="{StaticResource PageSubtitleLabel}"
+                   Margin="0,14,0,0" />
+
+            <!-- TEMPORARY: connection check from Step 2 and a style preview. Removed in Step 4. -->
+            <Label Text="{Binding ConnectionStatus}"
+                   Style="{StaticResource MetaLabel}"
+                   Margin="0,24,0,0" />
+
+            <Border Style="{StaticResource CardBorder}" Margin="0,24,0,0">
+                <VerticalStackLayout Spacing="6">
+                    <Border Style="{StaticResource PillBorder}"
+                            BackgroundColor="{StaticResource StatusInProgressBackground}">
+                        <Label Text="In progress"
+                               Style="{StaticResource PillLabel}"
+                               TextColor="{StaticResource StatusInProgressText}" />
+                    </Border>
+                    <Label Text="Prepare the quarterly report"
+                           Style="{StaticResource CardTitleLabel}"
+                           Margin="0,4,0,0" />
+                    <Label Text="Collect the numbers from each team and draft the summary."
+                           Style="{StaticResource BodyLabel}" />
+                    <HorizontalStackLayout Spacing="16" Margin="0,9,0,0">
+                        <HorizontalStackLayout Spacing="5">
+                            <Label Text="Category" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
+                            <Label Text="Work" Style="{StaticResource MetaLabel}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="5">
+                            <Label Text="Due" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
+                            <Label Text="Oct 31, 2026" Style="{StaticResource MetaLabel}" />
+                        </HorizontalStackLayout>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <HorizontalStackLayout Spacing="8" Margin="0,16,0,0">
+                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusPendingBackground}">
+                    <Label Text="Pending" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusPendingText}" />
+                </Border>
+                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusInProgressBackground}">
+                    <Label Text="In progress" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusInProgressText}" />
+                </Border>
+                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusCompletedBackground}">
+                    <Label Text="Completed" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusCompletedText}" />
+                </Border>
+                <Border Style="{StaticResource PillBorder}" BackgroundColor="{StaticResource StatusCancelledBackground}">
+                    <Label Text="Cancelled" Style="{StaticResource PillLabel}" TextColor="{StaticResource StatusCancelledText}" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <Button Text="Add task" HorizontalOptions="Start" Margin="0,16,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
