@@ -7,16 +7,6 @@
              Title="MyTasks">
 
     <VerticalStackLayout Padding="24" Spacing="6">
-        <Label Text="MYTASKS"
-               TextColor="{StaticResource Primary}"
-               FontAttributes="Bold"
-               FontSize="12" />
-
-        <Label Text="MyTasks"
-               Style="{StaticResource Headline}"
-               HorizontalOptions="Start"
-               SemanticProperties.HeadingLevel="Level1" />
-
-        <Label Text="Foundation is running. The task list arrives in a later step." />
+        <Label Text="{Binding ConnectionStatus}" />
     </VerticalStackLayout>
 </ContentPage>
