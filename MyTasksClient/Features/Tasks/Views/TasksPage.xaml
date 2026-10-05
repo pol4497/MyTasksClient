@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:MyTasksClient.Features.Tasks.Models"
+             xmlns:views="clr-namespace:MyTasksClient.Features.Tasks.Views"
              xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
              x:Class="MyTasksClient.Features.Tasks.Views.TasksPage"
              x:DataType="vm:TasksViewModel"
@@ -24,6 +25,9 @@
             <Label Text="Insert and inspect your daily tasks."
                    Style="{StaticResource PageSubtitleLabel}"
                    Margin="0,14,0,0" />
+
+            <!-- Add task form -->
+            <views:AddTaskForm BindingContext="{Binding AddTask}" Margin="0,32,0,0" />
 
             <!-- Section heading: "Your tasks" and the count -->
             <Grid ColumnDefinitions="*,Auto" Margin="0,34,0,12">

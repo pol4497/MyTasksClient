@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
+             x:Class="MyTasksClient.Features.Tasks.Views.AddTaskForm"
+             x:DataType="vm:AddTaskViewModel">
+
+    <Border Style="{StaticResource FormCard}">
+        <VerticalStackLayout Spacing="16">
+
+            <!-- Heading -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="NEW TASK" Style="{StaticResource EyebrowLabel}" />
+                    <Label Text="Add a task"
+                           Style="{StaticResource SectionTitleLabel}"
+                           SemanticProperties.HeadingLevel="Level2" />
+                </VerticalStackLayout>
+                <Label Grid.Column="1" Text="* Required" Style="{StaticResource MetaLabel}" />
+            </Grid>
+
+            <!-- Title, category and due date share a row on wide screens and wrap on narrow
+                 ones. Each field has a 16 gutter on its right and bottom; the negative
+                 margin on the right and bottom cancels the gutter at the card's edge. -->
+            <FlexLayout Wrap="Wrap" Margin="0,0,-16,-16">
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="280" FlexLayout.Grow="2">
+                    <Label Text="Title *" Style="{StaticResource FieldLabel}" />
+                    <Entry Text="{Binding Title}"
+                           Placeholder="Type a task name"
+                           MaxLength="200"
+                           ReturnType="Done"
+                           ReturnCommand="{Binding SubmitCommand}"
+                           SemanticProperties.Hint="Task title, required" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="170" FlexLayout.Grow="1">
+                    <Label Text="Category" Style="{StaticResource FieldLabel}" />
+                    <Entry Text="{Binding Category}"
+                           Placeholder="e.g. Work"
+                           MaxLength="100"
+                           ReturnType="Done"
+                           ReturnCommand="{Binding SubmitCommand}"
+                           SemanticProperties.Hint="Task category" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="190" FlexLayout.Grow="1">
+                    <Label Text="Due date" Style="{StaticResource FieldLabel}" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <DatePicker Date="{Binding DueDate}"
+                                    MinimumDate="{Binding MinimumDueDate}"
+                                    SemanticProperties.Hint="Task due date" />
+                        <Button Grid.Column="1"
+                                Text="Clear"
+                                Style="{StaticResource LinkButton}"
+                                Command="{Binding ClearDueDateCommand}"
+                                IsVisible="{Binding HasDueDate}" />
+                    </Grid>
+                </VerticalStackLayout>
+
+            </FlexLayout>
+
+            <!-- Description -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Description" Style="{StaticResource FieldLabel}" />
+                <Editor Text="{Binding Description}"
+                        Placeholder="Add optional details"
+                        MaxLength="1000"
+                        AutoSize="Disabled"
+                        HeightRequest="96"
+                        SemanticProperties.Hint="Task description" />
+            </VerticalStackLayout>
+
+            <!-- Validation or API error -->
+            <Label Text="{Binding ErrorMessage}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding HasError}" />
+
+            <!-- Right-aligned on desktop like the web client, full width on a phone -->
+            <Button Text="{Binding SubmitButtonText}"
+                    Command="{Binding SubmitCommand}"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=End}" />
+
+        </VerticalStackLayout>
+    </Border>
+</ContentView>
