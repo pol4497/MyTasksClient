@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
+             x:Class="MyTasksClient.Features.Tasks.Views.TaskQueryPanel"
+             x:DataType="vm:TaskQueryViewModel"
+             IsVisible="{Binding IsPanelOpen}">
+
+    <Border Style="{StaticResource CardBorder}">
+        <VerticalStackLayout Spacing="16">
+
+            <!-- Heading -->
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Filter &amp; sort"
+                       Style="{StaticResource SectionTitleLabel}"
+                       VerticalOptions="Center"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Button Grid.Column="1"
+                        Text="Close"
+                        Style="{StaticResource LinkButton}"
+                        Command="{Binding ClosePanelCommand}" />
+            </Grid>
+
+            <!-- Filter and sort controls. They wrap on narrow screens; the negative margin on
+                 the right and bottom cancels the gutter at the card's edge. -->
+            <FlexLayout Wrap="Wrap" Margin="0,0,-16,-16">
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="200" FlexLayout.Grow="1">
+                    <Label Text="Status" Style="{StaticResource FieldLabel}" />
+                    <Picker ItemsSource="{Binding StatusOptions}"
+                            SelectedItem="{Binding SelectedStatus}"
+                            SemanticProperties.Hint="Filter by status" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="200" FlexLayout.Grow="1">
+                    <Label Text="Category" Style="{StaticResource FieldLabel}" />
+                    <Entry Text="{Binding Category}"
+                           Placeholder="Any category"
+                           MaxLength="100"
+                           SemanticProperties.Hint="Filter by exact category" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="200" FlexLayout.Grow="1">
+                    <Label Text="Due after" Style="{StaticResource FieldLabel}" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <DatePicker Date="{Binding DueAfter}"
+                                    SemanticProperties.Hint="Show tasks due on or after this date" />
+                        <Button Grid.Column="1"
+                                Text="Clear"
+                                Style="{StaticResource LinkButton}"
+                                Command="{Binding ClearDueAfterCommand}"
+                                IsVisible="{Binding HasDueAfter}" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="200" FlexLayout.Grow="1">
+                    <Label Text="Due before" Style="{StaticResource FieldLabel}" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <DatePicker Date="{Binding DueBefore}"
+                                    SemanticProperties.Hint="Show tasks due on or before this date" />
+                        <Button Grid.Column="1"
+                                Text="Clear"
+                                Style="{StaticResource LinkButton}"
+                                Command="{Binding ClearDueBeforeCommand}"
+                                IsVisible="{Binding HasDueBefore}" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="200" FlexLayout.Grow="1">
+                    <Label Text="Sort by" Style="{StaticResource FieldLabel}" />
+                    <Picker ItemsSource="{Binding SortOptions}"
+                            SelectedItem="{Binding SelectedSortField}"
+                            SemanticProperties.Hint="Choose what to sort by" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,16,16"
+                                     FlexLayout.Basis="200" FlexLayout.Grow="1">
+                    <Label Text="Direction" Style="{StaticResource FieldLabel}" />
+                    <Picker ItemsSource="{Binding DirectionOptions}"
+                            SelectedItem="{Binding SelectedDirection}"
+                            SemanticProperties.Hint="Choose the sort direction" />
+                </VerticalStackLayout>
+
+            </FlexLayout>
+
+            <!-- Footer: Reset on the left, paging on the right; wraps on narrow screens -->
+            <FlexLayout Wrap="Wrap" AlignItems="End" Margin="0,0,-12,-12">
+
+                <Grid FlexLayout.Grow="1" FlexLayout.Basis="90" Margin="0,0,12,12">
+                    <Button Text="Reset"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ResetCommand}"
+                            HorizontalOptions="Start" />
+                </Grid>
+
+                <VerticalStackLayout Spacing="6" Margin="0,0,12,12" FlexLayout.Basis="130">
+                    <Label Text="Per page" Style="{StaticResource FieldLabel}" />
+                    <Picker ItemsSource="{Binding PageSizeOptions}"
+                            SelectedItem="{Binding SelectedPageSize}"
+                            SemanticProperties.Hint="Tasks per page" />
+                </VerticalStackLayout>
+
+                <Button Text="Previous"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding PreviousPageCommand}"
+                        Margin="0,0,12,12" />
+
+                <Label Text="{Binding PageText}"
+                       Style="{StaticResource FieldLabel}"
+                       HeightRequest="44"
+                       VerticalTextAlignment="Center"
+                       Margin="0,0,12,12" />
+
+                <Button Text="Next"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding NextPageCommand}"
+                        Margin="0,0,12,12" />
+
+            </FlexLayout>
+
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

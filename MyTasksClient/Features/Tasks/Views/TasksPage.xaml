@@ -29,6 +29,12 @@
             <!-- Add task form -->
             <views:AddTaskForm BindingContext="{Binding AddTask}" Margin="0,32,0,0" />
 
+            <!-- Search box and the Filter & sort button -->
+            <views:TaskToolbar BindingContext="{Binding Query}" Margin="0,34,0,0" />
+
+            <!-- Filter, sort and paging options (hidden until opened) -->
+            <views:TaskQueryPanel BindingContext="{Binding Query}" Margin="0,12,0,0" />
+
             <!-- Section heading: "Your tasks" and the count -->
             <Grid ColumnDefinitions="*,Auto" Margin="0,34,0,12">
                 <Label Text="Your tasks"
@@ -66,7 +72,7 @@
 
             <!-- Empty -->
             <Border Style="{StaticResource StateBorder}" IsVisible="{Binding IsEmpty}">
-                <Label Text="No tasks yet. Add one above to get started."
+                <Label Text="{Binding EmptyMessage}"
                        Style="{StaticResource StateLabel}" />
             </Border>
 
