@@ -103,4 +103,39 @@
         <Setter Property="TextColor" Value="{StaticResource ErrorText}" />
         <Setter Property="HorizontalTextAlignment" Value="Start" />
     </Style>
+
+    <!-- ===== Form ===== -->
+
+    <Style x:Key="FieldLabel" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextLabel}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- The form card: rounder, roomier and softly shadowed (the web client's AddTaskForm .card) -->
+    <Style x:Key="FormCard" TargetType="Border" BasedOn="{StaticResource CardBorder}">
+        <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+        <Setter Property="Padding">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="Thickness" Phone="20" Default="28" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="#0F172A" Opacity="0.06" Radius="18" Offset="0,12" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Text-only button, for small secondary actions such as "Clear" -->
+    <Style x:Key="LinkButton" TargetType="Button">
+        <Setter Property="TextColor" Value="{StaticResource Primary}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="MinimumWidthRequest" Value="44" />
+    </Style>
 </ResourceDictionary>
