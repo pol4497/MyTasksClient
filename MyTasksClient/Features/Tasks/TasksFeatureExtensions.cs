@@ -20,8 +20,10 @@ namespace MyTasksClient.Features.Tasks
                 client.Timeout = TimeSpan.FromSeconds(15);
             });
 
+            services.AddTransient<AddTaskViewModel>();
             services.AddTransient<TasksViewModel>();
             services.AddTransient<TasksPage>();
+
             return services;
         }
     }
