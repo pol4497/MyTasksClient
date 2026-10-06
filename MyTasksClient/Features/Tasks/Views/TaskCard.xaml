@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:MyTasksClient.Infrastructure"
+             xmlns:models="clr-namespace:MyTasksClient.Features.Tasks.Models"
+             xmlns:vm="clr-namespace:MyTasksClient.Features.Tasks.ViewModels"
+             x:Class="MyTasksClient.Features.Tasks.Views.TaskCard"
+             x:DataType="vm:TaskItemViewModel">
+
+    <ContentView.Resources>
+        <converters:InvertedBoolConverter x:Key="InvertedBool" />
+    </ContentView.Resources>
+
+    <Border Style="{StaticResource CardBorder}">
+        <Grid>
+
+            <VerticalStackLayout Spacing="6">
+
+                <!-- Status: the pill; double-click or double-tap swaps it for a dropdown -->
+                <Grid HorizontalOptions="Start">
+                    <Border Style="{StaticResource PillBorder}"
+                            IsVisible="{Binding IsEditingStatus, Converter={StaticResource InvertedBool}}"
+                            ToolTipProperties.Text="Double-click to edit">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                  Command="{Binding BeginEditCommand}"
+                                                  CommandParameter="{x:Static vm:EditableField.Status}" />
+                        </Border.GestureRecognizers>
+
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                         Value="{x:Static models:TaskItemStatus.Pending}">
+                                <Setter Property="BackgroundColor" Value="{StaticResource StatusPendingBackground}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                         Value="{x:Static models:TaskItemStatus.InProgress}">
+                                <Setter Property="BackgroundColor" Value="{StaticResource StatusInProgressBackground}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                         Value="{x:Static models:TaskItemStatus.Completed}">
+                                <Setter Property="BackgroundColor" Value="{StaticResource StatusCompletedBackground}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding Status}"
+                                         Value="{x:Static models:TaskItemStatus.Cancelled}">
+                                <Setter Property="BackgroundColor" Value="{StaticResource StatusCancelledBackground}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+
+                        <Label Text="{Binding StatusText}" Style="{StaticResource PillLabel}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                             Value="{x:Static models:TaskItemStatus.Pending}">
+                                    <Setter Property="TextColor" Value="{StaticResource StatusPendingText}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                             Value="{x:Static models:TaskItemStatus.InProgress}">
+                                    <Setter Property="TextColor" Value="{StaticResource StatusInProgressText}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                             Value="{x:Static models:TaskItemStatus.Completed}">
+                                    <Setter Property="TextColor" Value="{StaticResource StatusCompletedText}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding Status}"
+                                             Value="{x:Static models:TaskItemStatus.Cancelled}">
+                                    <Setter Property="TextColor" Value="{StaticResource StatusCancelledText}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </Border>
+
+                    <Picker IsVisible="{Binding IsEditingStatus}"
+                            ItemsSource="{Binding StatusChoices}"
+                            SelectedItem="{Binding EditStatus}"
+                            WidthRequest="180"
+                            HorizontalOptions="Start"
+                            SemanticProperties.Hint="Choose a new status" />
+                </Grid>
+
+                <!-- Title -->
+                <Grid Margin="0,4,0,0">
+                    <Label Text="{Binding Title}"
+                           Style="{StaticResource CardTitleLabel}"
+                           IsVisible="{Binding IsEditingTitle, Converter={StaticResource InvertedBool}}"
+                           ToolTipProperties.Text="Double-click to edit">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                  Command="{Binding BeginEditCommand}"
+                                                  CommandParameter="{x:Static vm:EditableField.Title}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Entry x:Name="TitleEntry"
+                           Text="{Binding EditText}"
+                           IsVisible="{Binding IsEditingTitle}"
+                           MaxLength="200"
+                           ReturnType="Done"
+                           ReturnCommand="{Binding SaveEditCommand}"
+                           SemanticProperties.Hint="Task title" />
+                </Grid>
+
+                <!-- Description (not editable in place, like the web client) -->
+                <Label Text="{Binding Description}"
+                       Style="{StaticResource BodyLabel}"
+                       IsVisible="{Binding IsEditingDescription, Converter={StaticResource InvertedBool}}"
+                       ToolTipProperties.Text="Double-click to edit"> 
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="2"
+                                              Command="{Binding BeginEditCommand}"
+                                              CommandParameter="{x:Static vm:EditableField.Description}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Entry x:Name="DescriptionEntry"
+                       Text="{Binding EditText}"
+                       IsVisible="{Binding IsEditingDescription}"
+                       MaxLength="1000"
+                       ReturnType="Done"
+                       ReturnCommand="{Binding SaveEditCommand}"
+                       SemanticProperties.Hint="Task description" />
+
+                <!-- Details wrap onto a second line on narrow screens -->
+                <FlexLayout Wrap="Wrap" Margin="0,9,0,0">
+
+                    <HorizontalStackLayout Spacing="5" Margin="0,0,16,0">
+                        <Label Text="Category" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
+
+                        <Label Text="{Binding CategoryText}"
+                               Style="{StaticResource MetaLabel}"
+                               IsVisible="{Binding IsEditingCategory, Converter={StaticResource InvertedBool}}"
+                               ToolTipProperties.Text="Double-click to edit">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      Command="{Binding BeginEditCommand}"
+                                                      CommandParameter="{x:Static vm:EditableField.Category}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+
+                        <Entry x:Name="CategoryEntry"
+                               Text="{Binding EditText}"
+                               IsVisible="{Binding IsEditingCategory}"
+                               WidthRequest="180"
+                               MaxLength="100"
+                               ReturnType="Done"
+                               ReturnCommand="{Binding SaveEditCommand}"
+                               SemanticProperties.Hint="Task category" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="5">
+                        <Label Text="Due" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
+
+                        <Label Text="{Binding DueDateText}"
+                              Style="{StaticResource MetaLabel}"
+                              IsVisible="{Binding IsEditingDueDate, Converter={StaticResource InvertedBool}}"
+                              ToolTipProperties.Text="Double-click to edit">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      Command="{Binding BeginEditCommand}"
+                                                      CommandParameter="{x:Static vm:EditableField.DueDate}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+
+                        <HorizontalStackLayout Spacing="4" IsVisible="{Binding IsEditingDueDate}">
+                            <DatePicker Date="{Binding EditDueDate}"
+                                        WidthRequest="150"
+                                        SemanticProperties.Hint="Task due date" />
+                            <Button Text="Clear"
+                                    Style="{StaticResource LinkButton}"
+                                    Command="{Binding ClearEditDueDateCommand}"
+                                    IsVisible="{Binding HasEditDueDate}" />
+                        </HorizontalStackLayout>
+                    </HorizontalStackLayout>
+
+                </FlexLayout>
+
+                <!-- Save and Cancel while editing -->
+                <HorizontalStackLayout Spacing="8" Margin="0,6,0,0" IsVisible="{Binding IsEditing}">
+                    <Button Text="Save"
+                            Command="{Binding SaveEditCommand}"
+                            IsVisible="{Binding ShowSaveButton}" />
+                    <Button Text="Cancel"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding CancelEditCommand}" />
+                </HorizontalStackLayout>
+
+                <!-- Save or delete error -->
+                <Label Text="{Binding ErrorMessage}"
+                       Style="{StaticResource ErrorLabel}"
+                       IsVisible="{Binding HasError}" />
+
+                <!-- Delete confirmation -->
+                <Border Style="{StaticResource ErrorBorder}"
+                        Padding="14"
+                        Margin="0,8,0,0"
+                        IsVisible="{Binding IsConfirmingDelete}">
+                    <FlexLayout Wrap="Wrap" AlignItems="Center">
+                        <Label Text="Delete this task?"
+                               Style="{StaticResource ErrorLabel}"
+                               VerticalOptions="Center"
+                               Margin="0,0,16,0" />
+                        <Button Text="Delete"
+                                Style="{StaticResource DangerButton}"
+                                Command="{Binding ConfirmDeleteCommand}"
+                                Margin="0,0,8,0" />
+                        <Button Text="Keep"
+                                Style="{StaticResource SecondaryButton}"
+                                Command="{Binding CancelDeleteCommand}" />
+                    </FlexLayout>
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- Delete: the × in the card's top-right corner -->
+            <Button Text="×"
+                    Style="{StaticResource IconButton}"
+                    Command="{Binding RequestDeleteCommand}"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="0,-8,-8,0"
+                    ToolTipProperties.Text="Delete task"
+                    SemanticProperties.Description="Delete task"
+                    SemanticProperties.Hint="{Binding Title}" />
+
+        </Grid>
+    </Border>
+</ContentView>

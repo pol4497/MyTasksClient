@@ -82,74 +82,7 @@
                                  BindableLayout.ItemsSource="{Binding Tasks}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="vm:TaskItemViewModel">
-                        <Border Style="{StaticResource CardBorder}">
-                            <VerticalStackLayout Spacing="6">
-
-                                <!-- Status pill: one trigger per status, colours come from the theme -->
-                                <Border Style="{StaticResource PillBorder}">
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
-                                                     Value="{x:Static models:TaskItemStatus.Pending}">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusPendingBackground}" />
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
-                                                     Value="{x:Static models:TaskItemStatus.InProgress}">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusInProgressBackground}" />
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
-                                                     Value="{x:Static models:TaskItemStatus.Completed}">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusCompletedBackground}" />
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Border" Binding="{Binding Status}"
-                                                     Value="{x:Static models:TaskItemStatus.Cancelled}">
-                                            <Setter Property="BackgroundColor" Value="{StaticResource StatusCancelledBackground}" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-
-                                    <Label Text="{Binding StatusText}" Style="{StaticResource PillLabel}">
-                                        <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
-                                                         Value="{x:Static models:TaskItemStatus.Pending}">
-                                                <Setter Property="TextColor" Value="{StaticResource StatusPendingText}" />
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
-                                                         Value="{x:Static models:TaskItemStatus.InProgress}">
-                                                <Setter Property="TextColor" Value="{StaticResource StatusInProgressText}" />
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
-                                                         Value="{x:Static models:TaskItemStatus.Completed}">
-                                                <Setter Property="TextColor" Value="{StaticResource StatusCompletedText}" />
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding Status}"
-                                                         Value="{x:Static models:TaskItemStatus.Cancelled}">
-                                                <Setter Property="TextColor" Value="{StaticResource StatusCancelledText}" />
-                                            </DataTrigger>
-                                        </Label.Triggers>
-                                    </Label>
-                                </Border>
-
-                                <Label Text="{Binding Title}"
-                                       Style="{StaticResource CardTitleLabel}"
-                                       Margin="0,4,0,0" />
-
-                                <Label Text="{Binding Description}"
-                                       Style="{StaticResource BodyLabel}"
-                                       IsVisible="{Binding HasDescription}" />
-
-                                <!-- Details wrap onto a second line on narrow screens -->
-                                <FlexLayout Wrap="Wrap" Margin="0,9,0,0">
-                                    <HorizontalStackLayout Spacing="5" Margin="0,0,16,0">
-                                        <Label Text="Category" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
-                                        <Label Text="{Binding CategoryText}" Style="{StaticResource MetaLabel}" />
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="5">
-                                        <Label Text="Due" Style="{StaticResource MetaLabel}" FontFamily="OpenSansSemibold" />
-                                        <Label Text="{Binding DueDateText}" Style="{StaticResource MetaLabel}" />
-                                    </HorizontalStackLayout>
-                                </FlexLayout>
-
-                            </VerticalStackLayout>
-                        </Border>
+                        <views:TaskCard />
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </VerticalStackLayout>

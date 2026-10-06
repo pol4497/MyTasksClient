@@ -83,6 +83,9 @@
 	  <MauiXaml Update="Features\Tasks\Views\AddTaskForm.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Features\Tasks\Views\TaskCard.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Features\Tasks\Views\TaskQueryPanel.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
