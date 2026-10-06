@@ -51,6 +51,22 @@ public partial class TasksViewModel : ObservableObject
         ? "No tasks match your search or filters."
         : "No tasks yet. Add one above to get started.";
 
+    // A card saved or deleted a task: reload so the list matches the server and the
+    // current search, filters, sort order and page.
+    private void OnTaskItemChanged(object? sender, EventArgs e) => LoadTasksCommand.Execute(null);
+
+    // The user started editing or deleting on one card: close whatever is open on the others.
+    private void OnTaskItemInteractionStarted(object? sender, EventArgs e)
+    {
+        foreach (var other in Tasks)
+        {
+            if (!ReferenceEquals(other, sender))
+            {
+                other.CancelInteractions();
+            }
+        }
+    }
+
     // Generates LoadTasksCommand. Concurrent runs are allowed on purpose: starting a new
     // load cancels the one in flight, so the newest request always wins.
     [RelayCommand(AllowConcurrentExecutions = true)]
@@ -95,7 +111,10 @@ public partial class TasksViewModel : ObservableObject
             Tasks.Clear();
             foreach (var task in visible)
             {
-                Tasks.Add(new TaskItemViewModel(task));
+                var item = new TaskItemViewModel(task, _tasksApi);
+                item.Changed += OnTaskItemChanged;
+                item.InteractionStarted += OnTaskItemInteractionStarted;
+                Tasks.Add(item);
             }
 
             ErrorMessage = null;
